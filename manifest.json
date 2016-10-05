@@ -1,0 +1,12 @@
+{
+	"manifest_version": 2,
+
+	"name": "Runtastic Archiver",
+	"description": "Download all Runtastic activities",
+	"version": "1.0",
+
+	"content_scripts": [{
+		"matches": ["https://www.runtastic.com/*"],
+		"js": ["main.js"]
+	}]
+}
