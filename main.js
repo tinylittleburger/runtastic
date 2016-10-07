@@ -1,10 +1,10 @@
-function poll() {
+function poll(name) {
 	function poll(count) {
 		if (count++ > 100) {
 			return;
 		}
 
-		var menu = getMenu();
+		var menu = getMenu(name);
 
 		if (menu) {
 			inject(menu);
@@ -16,10 +16,11 @@ function poll() {
 	return poll(0);
 }
 
-poll();
+poll("header-main-navigation");
+poll("mobile-nav");
 
-function getMenu() {
-	var header = document.getElementsByClassName("header-main-navigation");
+function getMenu(name) {
+	var header = document.getElementsByClassName(name);
 
 	if (header.length > 0) {
 		var menu = header[0].getElementsByClassName("navigation-list");
