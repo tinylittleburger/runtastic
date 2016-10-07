@@ -1,11 +1,19 @@
 function poll() {
-	var menu = getMenu();
+	function poll(count) {
+		if (count++ > 100) {
+			return;
+		}
 
-	if (menu) {
-		inject(menu);
-	} else {
-		setTimeout(poll, 100);
+		var menu = getMenu();
+
+		if (menu) {
+			inject(menu);
+		} else {
+			setTimeout(poll, 100, count);
+		}
 	}
+
+	return poll(0);
 }
 
 poll();
