@@ -38,7 +38,19 @@ function inject(menu) {
 	var link = document.createElement("a");
 	link.className = "ember-view rt-link-to header-navigation__link";
 	link.innerHTML = "Export";
+	link.addEventListener("click", getActivities, false);
 
 	item.appendChild(link);
 	menu.appendChild(item);
+}
+
+function getActivities() {
+	var elements = document.querySelectorAll("[data-gaq-label]");
+
+	for (var i = 0; i < elements.length; i++) {
+		if (elements[i].getAttribute("data-gaq-label") === "user_menu.activities") {
+			alert(elements[i].href);
+			return;
+		}
+	}
 }
