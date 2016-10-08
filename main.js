@@ -1,3 +1,16 @@
+var id = "b35569fd-bcec-4bdc-807d-d4b8cd2f319e";
+
+poll("header-main-navigation");
+poll("mobile-nav");
+
+window.addEventListener("message", receiveMessage, false);
+
+function receiveMessage(event) {
+	if (event.data.id === id) {
+		alert(event.data.data);
+	}
+}
+
 function poll(name) {
 	function poll(count) {
 		if (count++ > 100) {
@@ -15,9 +28,6 @@ function poll(name) {
 
 	return poll(0);
 }
-
-poll("header-main-navigation");
-poll("mobile-nav");
 
 function getMenu(name) {
 	var header = document.getElementsByClassName(name);
@@ -45,12 +55,31 @@ function inject(menu) {
 }
 
 function getActivities() {
+	var url = getActivitiesURL();
+
+	if (!url) {
+		return;
+	}
+
+	var iframe = document.createElement("iframe");
+	iframe.src = url;
+
+	iframe.setAttribute("style", "display:none;");
+	document.body.appendChild(iframe);
+
+	var script = iframe.contentDocument.createElement("script");
+	script.type = "text/javascript";
+	script.text = 'window.onload = () => { window.parent.postMessage({ "id": "b35569fd-bcec-4bdc-807d-d4b8cd2f319e", "data": index_data }, "*")};';
+
+	iframe.contentDocument.body.appendChild(script);
+}
+
+function getActivitiesURL() {
 	var elements = document.querySelectorAll("[data-gaq-label]");
 
 	for (var i = 0; i < elements.length; i++) {
 		if (elements[i].getAttribute("data-gaq-label") === "user_menu.activities") {
-			alert(elements[i].href);
-			return;
+			return elements[i].href;
 		}
 	}
 }
