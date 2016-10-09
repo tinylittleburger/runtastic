@@ -1,31 +1,31 @@
-var id = "b35569fd-bcec-4bdc-807d-d4b8cd2f319e";
-
-var request = new Request("https://hubs.runtastic.com/samples/v2/users/93431237/samples/1404404249?include=trace_collection", {
-	credentials: "include",
-	headers: new Headers({
-		'X-App-Key': 'com.runtastic.ember',
-		'X-App-Version': '1.0'
-	})
-});
-
-fetch(request)
-	.then(response => response.json())
-	.then(result => alert(result.data.id));
-
 poll("header-main-navigation");
 poll("mobile-nav");
 
 window.addEventListener("message", receiveMessage, false);
 
 function receiveMessage(event) {
-	if (event.data.id === id) {
-		var ids = getIds(event.data.data);
-		alert(JSON.stringify(ids, null, "  "));
+	var data = event.data;
+
+	if (data.id === "b35569fd-bcec-4bdc-807d-d4b8cd2f319e") {
+		var userId = data.user;
+		var promises = data.data.map(element => getExportId(userId, element[0]));
+
+		Promise.all(promises).then(exportIds => alert(exportIds));
 	}
 }
 
-function getIds(data) {
-	return data.map(element => element[0]);
+function getExportId(userId, activityId) {
+	var request = new Request(`https://hubs.runtastic.com/samples/v2/users/${userId}/samples/${activityId}?include=trace_collection`, {
+		credentials: "include",
+		headers: new Headers({
+			'X-App-Key': 'com.runtastic.ember',
+			'X-App-Version': '1.0'
+		})
+	});
+
+	return fetch(request)
+		.then(response => response.json())
+		.then(result => result.data.id);
 }
 
 function poll(name) {
@@ -86,7 +86,7 @@ function getActivities() {
 
 	var script = iframe.contentDocument.createElement("script");
 	script.type = "text/javascript";
-	script.text = 'window.onload = () => { window.parent.postMessage({ "id": "b35569fd-bcec-4bdc-807d-d4b8cd2f319e", "data": index_data }, "*")};';
+	script.text = 'window.onload = () => { window.parent.postMessage({ "id": "b35569fd-bcec-4bdc-807d-d4b8cd2f319e", "data": index_data, "user": watched_user.id }, "*")};';
 
 	iframe.contentDocument.body.appendChild(script);
 }
