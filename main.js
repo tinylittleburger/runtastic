@@ -1,5 +1,17 @@
 var id = "b35569fd-bcec-4bdc-807d-d4b8cd2f319e";
 
+var request = new Request("https://hubs.runtastic.com/samples/v2/users/93431237/samples/1404404249?include=trace_collection", {
+	credentials: "include",
+	headers: new Headers({
+		'X-App-Key': 'com.runtastic.ember',
+		'X-App-Version': '1.0'
+	})
+});
+
+fetch(request)
+	.then(response => response.json())
+	.then(result => alert(result.data.id));
+
 poll("header-main-navigation");
 poll("mobile-nav");
 
@@ -7,8 +19,13 @@ window.addEventListener("message", receiveMessage, false);
 
 function receiveMessage(event) {
 	if (event.data.id === id) {
-		alert(event.data.data);
+		var ids = getIds(event.data.data);
+		alert(JSON.stringify(ids, null, "  "));
 	}
+}
+
+function getIds(data) {
+	return data.map(element => element[0]);
 }
 
 function poll(name) {
